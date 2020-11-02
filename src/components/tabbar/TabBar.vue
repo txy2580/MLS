@@ -19,8 +19,6 @@
     right: 0;
     left: 0;
     box-shadow: 0 -0.3px 0px rgba(100, 100, 100, .4);
-    
-    
   }
 
 </style>

@@ -6,25 +6,20 @@
 		</nav-bar>
 		<!-- 轮播 -->
 		<HomeSwiper></HomeSwiper>
-		<!-- 
-		<scroll :probe-type="3" :pull-up-load="true" class="content" :data="[showGoodsList]" @pullingUp="loadMore" @scroll="contentScrroll" rel="scroll"></scroll> -->
 		<!-- 推荐信息 -->
 		<RecommendView :recommends="recommends"></RecommendView>
 		<!-- feature-->
 		<FeatureView></FeatureView>
 		<!-- TabControls -->
-		<TabControls class="TabControls" :titles="['流行','新款','精选']" 
-                   ref="tabControl2"/>
-		<!-- 	<GoodsList :goods="goods[pop].list"></GoodsList> -->
+		<TabControls class="TabControls" :titles="['流行','新款','精选']" @tabClick="tabClick"/>
+		<!-- 分页列表 -->
+		<GoodsList :goods="showGoods"/>
 	</div>
 </template>
 
 <script>
 	import NavBar from '@/components/commom/navbar/NavBar.vue'
-	import {
-		getHomeMultidata,
-		getHomeGoods
-	} from '../../../network/home.js'
+	import {getHomeMultidata,getHomeGoods} from '../../../network/home.js'
 	import swiper from '../../components/commom/swiper/swiper.vue'
 	import HomeSwiper from './childComps/HomeSwiper.vue'
 	import RecommendView from './childComps/RecommendView.vue'
@@ -63,7 +58,8 @@
 						page: 0,
 						list: []
 					},
-				}
+				},
+				currentType:"pop"
 			}
 		},
 		created() {
@@ -74,7 +70,27 @@
 			this.getHomeGoods('new')
 			this.getHomeGoods('sell')
 		},
+		computed:{
+           showGoods(){
+			   return this.goods[this.currentType].list
+		   }
+		},
 		methods: {
+			// 事件监听相关
+			tabClick(index){
+              switch(index){
+                case 0:
+					this.currentType = 'pop'
+					break
+				case 1:
+					this.currentType = 'new'
+					break
+				case 2:
+					this.currentType = 'sell'
+					break		 
+			  }
+			}, 
+			// 网络请求相关
 			getHomeMultidata() {
 				//1.请求多个数据
 				getHomeMultidata().then(res => {
@@ -99,7 +115,8 @@
 
 	.TabControls {
 		position: sticky;
-		top: 0px;
+		top: 44px;
+		z-index: 20;
 	}
 
 	.home-nav {
